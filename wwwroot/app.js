@@ -4,10 +4,10 @@ async function loadStaffs(branchId) {
   let data = await resp.json();
   let cbo = document.getElementById("staff");
   cbo.innerHTML = '<option value="">-- Chọn nhân viên --</option>';
-  data.filter(s => s.branchId === branchId).forEach(staff => {
+  data.filter(s => s.BranchId === branchId).forEach(staff => {
     let opt = document.createElement("option");
-    opt.value = staff.id;
-    opt.textContent = staff.name;
+    opt.value = staff.Id;
+    opt.textContent = staff.Name;
     cbo.appendChild(opt);
   });
 }
@@ -21,13 +21,13 @@ async function loadCustomers() {
   let txtName = document.getElementById("customer");
 
   txtPhone.addEventListener("change", () => {
-    let c = customers.find(x => x.phone === txtPhone.value);
-    if (c) txtName.value = c.name;
+    let c = customers.find(x => x.Phone === txtPhone.value);
+    if (c) txtName.value = c.Name;
   });
 
   txtName.addEventListener("change", () => {
-    let c = customers.find(x => x.name === txtName.value);
-    if (c) txtPhone.value = c.phone;
+    let c = customers.find(x => x.Name === txtName.value);
+    if (c) txtPhone.value = c.Phone;
   });
 }
 
@@ -39,8 +39,8 @@ async function loadServices() {
   cbo.innerHTML = '<option value="">-- Chọn dịch vụ --</option>';
   data.forEach(svc => {
     let opt = document.createElement("option");
-    opt.value = svc.id;
-    opt.textContent = svc.name;
+    opt.value = svc.Id;
+    opt.textContent = svc.Name;
     cbo.appendChild(opt);
   });
 }
