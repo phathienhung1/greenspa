@@ -2,79 +2,55 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>KTVGREEN - Tạo lịch hẹn</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Lịch dịch vụ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet">
+  <style>
+    body { padding: 20px; }
+    #calendar { max-width: 100%; margin: 0 auto; }
+  </style>
 </head>
-<body class="bg-light">
-
-<div class="container py-4">
-  <h3 class="text-center mb-4">KTVGREEN - Tạo lịch hẹn</h3>
-
-  <form id="appointmentForm" class="card p-3 shadow-sm bg-white">
-
-    <div class="mb-3">
-      <label for="branch" class="form-label">Chi nhánh</label>
-      <select id="branch" class="form-select" required>
-        <option value="">-- Chọn chi nhánh --</option>
-        <option value="1">Chi nhánh 1</option>
-        <option value="2">Chi nhánh 2</option>
-        <option value="3">Chi nhánh 3</option>
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="staff" class="form-label">Nhân viên làm DV</label>
-      <select id="staff" class="form-select" required>
-        <option value="">-- Chọn nhân viên --</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <div class="col mb-3">
-        <label for="date" class="form-label">Ngày</label>
-        <input type="date" id="date" class="form-control" required>
+<body>
+  <div class="container">
+    <h3 class="mb-3">📅 Lịch dịch vụ</h3>
+    <div class="row mb-3">
+      <div class="col">
+        <select id="staffFilter" class="form-select">
+          <option value="">Tất cả nhân viên</option>
+        </select>
       </div>
-      <div class="col mb-3">
-        <label for="start" class="form-label">Bắt đầu</label>
-        <input type="time" id="start" class="form-control" required>
-      </div>
-      <div class="col mb-3">
-        <label for="end" class="form-label">Kết thúc</label>
-        <input type="time" id="end" class="form-control" required>
+      <div class="col">
+        <select id="statusFilter" class="form-select">
+          <option value="">Tất cả trạng thái</option>
+          <option value="Chờ xác nhận">Chờ xác nhận</option>
+          <option value="Chưa tới">Chưa tới</option>
+          <option value="Đang chờ">Đang chờ</option>
+          <option value="Đang sử dụng">Đang sử dụng</option>
+          <option value="Đã xong">Đã xong</option>
+        </select>
       </div>
     </div>
+    <div id="calendar"></div>
+  </div>
 
-    <div class="mb-3">
-      <label for="phone" class="form-label">Số điện thoại</label>
-      <input type="text" id="phone" class="form-control" required>
+  <!-- Modal Chi tiết -->
+  <div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Chi tiết lịch hẹn</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="eventDetails"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="mb-3">
-      <label for="customer" class="form-label">Tên khách hàng</label>
-      <input type="text" id="customer" class="form-control" required>
-    </div>
-
-	<div class="mb-3">
-	  <label for="serviceSearch" class="form-label">Dịch vụ</label>
-	  <div class="input-group">
-		<input type="text" id="serviceSearch" class="form-control" placeholder="Gõ tên dịch vụ...">
-		<button type="button" id="btnAddService" class="btn btn-outline-success">+</button>
-	  </div>
-	  <ul id="selectedServices" class="mt-2 list-unstyled"></ul>
-	</div>
-
-    <div class="form-check mb-3">
-      <input type="checkbox" class="form-check-input" id="paid">
-      <label class="form-check-label" for="paid">Đã thanh toán</label>
-    </div>
-
-    <button type="submit" class="btn btn-success w-100">Tạo lịch</button>
-  </form>
-
-  <div id="msg" class="mt-3"></div>
-</div>
-
-<script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
