@@ -23,21 +23,18 @@ async function loadCustomers() {
   let txtPhone = document.getElementById("phone");
   let txtName = document.getElementById("customer");
 
-  // Autocomplete cho SĐT
   txtPhone.addEventListener("input", () => {
     let val = txtPhone.value.trim();
     let list = customers.filter(x => x.Phone.startsWith(val));
     showSuggestions(txtPhone, list.map(x => x.Phone));
   });
 
-  // Autocomplete cho Tên
   txtName.addEventListener("input", () => {
     let val = txtName.value.trim().toLowerCase();
     let list = customers.filter(x => x.Name.toLowerCase().includes(val));
     showSuggestions(txtName, list.map(x => x.Name));
   });
 
-  // Mapping khi blur
   txtPhone.addEventListener("change", () => {
     let c = customers.find(x => x.Phone === txtPhone.value.trim());
     if (c) txtName.value = c.Name;
@@ -48,7 +45,7 @@ async function loadCustomers() {
   });
 }
 
-// Load Services (autocomplete + chọn nhiều)
+// Load Services (autocomplete + thêm nhiều + số lượng)
 async function loadServices() {
   let resp = await fetch("/services.json");
   services = await resp.json();
@@ -56,14 +53,12 @@ async function loadServices() {
   let txtSvc = document.getElementById("serviceSearch");
   let listContainer = document.getElementById("selectedServices");
 
-  // Autocomplete khi gõ dịch vụ
   txtSvc.addEventListener("input", () => {
     let val = txtSvc.value.trim().toLowerCase();
     let list = services.filter(s => s.Name.toLowerCase().includes(val));
-    showSuggestions(txtSvc, list.map(s => s.Name));
+    showSuggestions(txtSvc, list.map(s => s.Name)); // ❌ bỏ slice
   });
 
-  // Nút +
   document.getElementById("btnAddService").addEventListener("click", () => {
     let svcName = txtSvc.value.trim();
     let svc = services.find(s => s.Name === svcName);
@@ -71,10 +66,34 @@ async function loadServices() {
       alert("Chọn dịch vụ hợp lệ!");
       return;
     }
+
+    // tạo item dịch vụ có input số lượng
     let li = document.createElement("li");
-    li.textContent = svc.Name + " (" + svc.Price + "₫)";
     li.dataset.id = svc.Id;
+    li.className = "d-flex align-items-center mb-1";
+
+    let span = document.createElement("span");
+    span.textContent = svc.Name + " (" + svc.Price + "₫)";
+    span.style.flex = "1";
+
+    let qty = document.createElement("input");
+    qty.type = "number";
+    qty.value = 1;
+    qty.min = 1;
+    qty.className = "form-control form-control-sm";
+    qty.style.width = "60px";
+    qty.style.marginLeft = "8px";
+
+    let remove = document.createElement("button");
+    remove.textContent = "x";
+    remove.className = "btn btn-sm btn-danger ms-2";
+    remove.onclick = () => li.remove();
+
+    li.appendChild(span);
+    li.appendChild(qty);
+    li.appendChild(remove);
     listContainer.appendChild(li);
+
     txtSvc.value = "";
   });
 }
@@ -84,17 +103,16 @@ function showSuggestions(input, suggestions) {
   closeSuggestions();
   if (!suggestions.length) return;
   let list = document.createElement("ul");
-  list.className = "suggestions";
-  list.style.position = "absolute";
-  list.style.background = "#fff";
-  list.style.border = "1px solid #ccc";
-  list.style.width = input.offsetWidth + "px";
+  list.className = "suggestions list-group position-absolute";
   list.style.zIndex = 1000;
+  list.style.maxHeight = "200px";
+  list.style.overflowY = "auto";
+  list.style.width = input.offsetWidth + "px";
 
-  suggestions.slice(0, 5).forEach(s => {
+  suggestions.forEach(s => {
     let item = document.createElement("li");
     item.textContent = s;
-    item.style.padding = "4px";
+    item.className = "list-group-item list-group-item-action";
     item.addEventListener("click", () => {
       input.value = s;
       closeSuggestions();
@@ -110,7 +128,6 @@ function closeSuggestions() {
   document.querySelectorAll(".suggestions").forEach(el => el.remove());
 }
 
-// Khi chọn chi nhánh thì reload staff
 document.addEventListener("DOMContentLoaded", () => {
   const cboBranch = document.getElementById("branch");
   cboBranch.addEventListener("change", () => {
