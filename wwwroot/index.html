@@ -55,12 +55,14 @@
       <input type="text" id="customer" class="form-control" required>
     </div>
 
-    <div class="mb-3">
-      <label for="service" class="form-label">Dịch vụ</label>
-      <select id="service" class="form-select" required>
-        <option value="">-- Chọn dịch vụ --</option>
-      </select>
-    </div>
+	<div class="mb-3">
+	  <label for="serviceSearch" class="form-label">Dịch vụ</label>
+	  <div class="input-group">
+		<input type="text" id="serviceSearch" class="form-control" placeholder="Gõ tên dịch vụ...">
+		<button type="button" id="btnAddService" class="btn btn-outline-success">+</button>
+	  </div>
+	  <ul id="selectedServices" class="mt-2 list-unstyled"></ul>
+	</div>
 
     <div class="form-check mb-3">
       <input type="checkbox" class="form-check-input" id="paid">
