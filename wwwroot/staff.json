@@ -2,121 +2,121 @@
   {
     "Id": "0411e9ef-b093-4bcc-8bdf-c974e4504e23",
     "Name": "NHI  LỚN",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "9c4fe852-438f-488a-af85-f35083040906",
     "Name": "Châu Đài",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "d390970e-e496-4684-bc63-c7203cfa0411",
     "Name": "Thuỳ Trang",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "dd8c68b3-1779-450f-ba14-f2dbbd283131",
     "Name": "Hạnh Uyên",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "9c50da30-65f4-4914-a7c1-40d62214effe",
     "Name": "Diễm My",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "dded913f-3e7a-42c7-a737-928fc79621ff",
     "Name": "Mỹ Diệu",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "bd666884-b832-4c03-b765-0c373a4f4676",
     "Name": "Mỹ Duyên",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "be137f98-4098-4789-b20b-5697fedc1156",
     "Name": "Mỹ Tâm",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "666aea17-6fdc-47bc-989f-5e36f797a384",
     "Name": "Ngọc Huyền",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "448a6ff0-d25f-4684-a3d3-50feac29a7c7",
     "Name": "Nhi Nhỏ",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "25056853-3b55-461a-aa7e-e8b829e92967",
     "Name": "TỐ QUYÊN",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "0a520078-d6ef-4d32-ab3c-f2bb8582f978",
     "Name": "Nhung Nguyễn",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "36e6b263-5806-413c-b8ea-87f7142322be",
     "Name": "Huỳnh thư",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "21a446f0-de5d-4580-940b-b6f3deb06345",
     "Name": "Mỹ Linh",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "32d4185e-7e9f-42e4-89bf-9c4631c58e72",
     "Name": "Bé Vy",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "33d6e9f4-0058-4f5c-a9d5-7455a570212a",
     "Name": "Hồng Hạnh",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "36d03b35-8d4a-477e-a8e8-1db68dcc2c69",
     "Name": "Kim Duyên",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "159815f5-f2bf-4361-b4ae-658e4eed80bd",
     "Name": "Ngọc Thơ",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "74fbb841-15a3-4bf8-9680-0eb497289741",
     "Name": "Thanh Nhi",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "7692f9e7-c58a-46ea-9565-bc8c9564f38b",
     "Name": "Phụng Tiên",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "895ecd76-0ac1-422e-a9bb-76fcb90b98cd",
     "Name": "Trâm",
-    "BranchId": null
+    "BranchId": "Chi nhánh 1"
   },
   {
     "Id": "9bb083b4-4fc1-45dc-9683-63378a0ecf10",
     "Name": "Đào Anh Thư",
-    "BranchId": null
+    "BranchId": "Chi nhánh 2"
   },
   {
     "Id": "0fef6975-7ae6-4412-be2b-6ef795383ddf",
     "Name": "Huỳnh Hoàng Oanh",
-    "BranchId": null
+    "BranchId": "Chi nhánh 2"
   },
   {
     "Id": "19a8bca5-c55f-447c-a132-914698b63f7a",
     "Name": "Nguyễn Thị Ngọc Bích",
-    "BranchId": null
+    "BranchId": "Chi nhánh 2"
   }
 ]
