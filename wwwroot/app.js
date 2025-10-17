@@ -1,91 +1,64 @@
-document.addEventListener('DOMContentLoaded', async function() {
-  const calendarEl = document.getElementById('calendar');
-  const staffFilter = document.getElementById('staffFilter');
-  const statusFilter = document.getElementById('statusFilter');
+let appointments = [];
 
-  let staffs = [];
-  let customers = [];
-  let services = [];
-  let appointments = [];
+async function loadAppointments() {
+  let resp = await fetch("appointments.json");
+  appointments = await resp.json();
+  renderList();
+  renderCalendar();
+}
 
-  async function loadData() {
-    staffs = await (await fetch('staff.json')).json();
-    customers = await (await fetch('customers.json')).json();
-    services = await (await fetch('services.json')).json();
-    appointments = await (await fetch('appointments.json')).json();
-  }
-
-  function getStaffName(id) {
-    const s = staffs.find(x => x.Id == id);
-    return s ? s.Name : '';
-  }
-  function getCustomerName(id) {
-    const c = customers.find(x => x.Id == id);
-    return c ? c.Name + ' (' + c.Phone + ')' : '';
-  }
-  function getServiceNames(ids) {
-    return ids.map(i => {
-      const svc = services.find(x => x.Id == i);
-      return svc ? svc.Name : '';
-    }).join(', ');
-  }
-
-  await loadData();
-
-  // Fill staff filter
-  staffs.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.Id;
-    opt.textContent = s.Name;
-    staffFilter.appendChild(opt);
+// ========== Danh sách ==========
+function renderList() {
+  const ul = document.getElementById("appointment-list");
+  ul.innerHTML = "";
+  appointments.forEach(ap => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <b>${ap.CustomerName}</b> (${ap.Phone})<br>
+      ${ap.Start} - ${ap.End}<br>
+      ${ap.Services.join(", ")}<br>
+      <span style="color:${ap.Paid ? 'green':'red'}">
+        ${ap.Paid ? "Đã thanh toán":"Chưa thanh toán"}
+      </span>
+    `;
+    ul.appendChild(li);
   });
+}
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridDay',
-    slotMinTime: '07:00:00',
-    slotMaxTime: '24:00:00',
-    locale: 'vi',
-    events: function(fetchInfo, successCallback) {
-      let list = appointments.map(a => ({
-        id: a.Id,
-        title: getCustomerName(a.CustomerId),
-        start: a.Start,
-        end: a.End,
-        extendedProps: {
-          staff: getStaffName(a.StaffId),
-          services: getServiceNames(a.ServiceIds),
-          status: a.Status,
-          paid: a.Paid
-        }
-      }));
+// ========== Calendar ==========
+let calendar;
+function renderCalendar() {
+  const el = document.getElementById("calendar");
+  if (calendar) calendar.destroy();
 
-      // filter by staff
-      if (staffFilter.value) {
-        list = list.filter(e => e.extendedProps.staff && staffs.find(s => s.Id == staffFilter.value).Name === e.extendedProps.staff);
-      }
-      // filter by status
-      if (statusFilter.value) {
-        list = list.filter(e => e.extendedProps.status === statusFilter.value);
-      }
-      successCallback(list);
-    },
-    eventClick: function(info) {
-      const ev = info.event;
-      const props = ev.extendedProps;
-      const detail = `
-        <b>Khách:</b> ${ev.title}<br/>
-        <b>Dịch vụ:</b> ${props.services}<br/>
-        <b>Nhân viên:</b> ${props.staff}<br/>
-        <b>Trạng thái:</b> ${props.status}<br/>
-        <b>Thanh toán:</b> ${props.paid ? 'Đã TT' : 'Chưa TT'}
-      `;
-      document.getElementById('eventDetails').innerHTML = detail;
-      new bootstrap.Modal(document.getElementById('eventModal')).show();
-    }
+  calendar = new FullCalendar.Calendar(el, {
+    initialView: "timeGridDay",
+    locale: "vi",
+    allDaySlot: false,
+    slotMinTime: "07:00:00",
+    slotMaxTime: "23:00:00",
+    events: appointments.map(ap => ({
+      title: ap.CustomerName + " - " + ap.Services.join(", "),
+      start: ap.Start,
+      end: ap.End,
+      color: ap.Paid ? "green" : "red"
+    }))
   });
-
   calendar.render();
+}
 
-  staffFilter.addEventListener('change', () => calendar.refetchEvents());
-  statusFilter.addEventListener('change', () => calendar.refetchEvents());
+// ========== Tabs ==========
+document.addEventListener("DOMContentLoaded", () => {
+  loadAppointments();
+
+  document.getElementById("tab-list").addEventListener("click", () => {
+    document.getElementById("list-view").classList.add("active");
+    document.getElementById("calendar-view").classList.remove("active");
+  });
+
+  document.getElementById("tab-calendar").addEventListener("click", () => {
+    document.getElementById("calendar-view").classList.add("active");
+    document.getElementById("list-view").classList.remove("active");
+    renderCalendar();
+  });
 });
