@@ -63,10 +63,11 @@ async function loadServices() {
   });
 
   document.getElementById("btnAddService").addEventListener("click", () => {
-    let svcName = txtSvc.value.trim();
-    let svc = services.find(
-      s => s.Name.toLowerCase() === svcName.toLowerCase()
-    );
+    let svcName = txtSvc.value.trim().toLowerCase();
+	let svc = services.find(
+	  s => s.Name.toLowerCase().includes(svcName)
+	);
+
     if (!svc) {
       alert("Chọn dịch vụ hợp lệ!");
       return;
