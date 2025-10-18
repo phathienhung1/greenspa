@@ -39,59 +39,82 @@ async function loadCustomers() {
     if (match) txtPhone.value = match.Phone;
   });
 }
-
 // Load Services (autocomplete + thêm nhiều + số lượng)
 async function loadServices() {
-  let resp = await fetch("/services.json");
+  let resp = await fetch("services.json");
   services = await resp.json();
 
   let txtSvc = document.getElementById("serviceSearch");
   let listContainer = document.getElementById("selectedServices");
 
+  // Tạo box gợi ý
+  let suggestionBox = document.createElement("div");
+  suggestionBox.className = "list-group position-absolute w-100";
+  suggestionBox.style.zIndex = "1000";
+  txtSvc.parentNode.appendChild(suggestionBox);
+
   txtSvc.addEventListener("input", () => {
     let val = txtSvc.value.trim().toLowerCase();
-    let list = services.filter(s => s.Name.toLowerCase().includes(val));
-    showSuggestions(txtSvc, list.map(s => s.Name)); // ❌ bỏ slice
+    suggestionBox.innerHTML = "";
+    if (!val) return;
+
+    let list = services.filter(s => s.Name.toLowerCase().includes(val)).slice(0, 5);
+    list.forEach(svc => {
+      let item = document.createElement("button");
+      item.type = "button";
+      item.className = "list-group-item list-group-item-action";
+      item.textContent = `${svc.Name} (${svc.Price.toLocaleString()}₫)`;
+      item.onclick = () => {
+        addServiceToList(svc, listContainer);
+        suggestionBox.innerHTML = "";
+        txtSvc.value = "";
+      };
+      suggestionBox.appendChild(item);
+    });
   });
 
   document.getElementById("btnAddService").addEventListener("click", () => {
-    let svcName = txtSvc.value.trim();
-    let svc = services.find(s => s.Name === svcName);
+    let val = txtSvc.value.trim().toLowerCase();
+    let svc = services.find(s => s.Name.toLowerCase() === val);
     if (!svc) {
       alert("Chọn dịch vụ hợp lệ!");
       return;
     }
-
-    // tạo item dịch vụ có input số lượng
-    let li = document.createElement("li");
-    li.dataset.id = svc.Id;
-    li.className = "d-flex align-items-center mb-1";
-
-    let span = document.createElement("span");
-    span.textContent = svc.Name + " (" + svc.Price + "₫)";
-    span.style.flex = "1";
-
-    let qty = document.createElement("input");
-    qty.type = "number";
-    qty.value = 1;
-    qty.min = 1;
-    qty.className = "form-control form-control-sm";
-    qty.style.width = "60px";
-    qty.style.marginLeft = "8px";
-
-    let remove = document.createElement("button");
-    remove.textContent = "x";
-    remove.className = "btn btn-sm btn-danger ms-2";
-    remove.onclick = () => li.remove();
-
-    li.appendChild(span);
-    li.appendChild(qty);
-    li.appendChild(remove);
-    listContainer.appendChild(li);
-
+    addServiceToList(svc, listContainer);
     txtSvc.value = "";
+    suggestionBox.innerHTML = "";
   });
 }
+
+// thêm dịch vụ vào danh sách với input số lượng
+function addServiceToList(svc, listContainer) {
+  let li = document.createElement("li");
+  li.dataset.id = svc.Id;
+  li.className = "d-flex align-items-center mb-1";
+
+  let span = document.createElement("span");
+  span.textContent = `${svc.Name} (${svc.Price.toLocaleString()}₫)`;
+  span.style.flex = "1";
+
+  let qty = document.createElement("input");
+  qty.type = "number";
+  qty.value = 1;
+  qty.min = 1;
+  qty.className = "form-control form-control-sm";
+  qty.style.width = "60px";
+  qty.style.marginLeft = "8px";
+
+  let remove = document.createElement("button");
+  remove.textContent = "x";
+  remove.className = "btn btn-sm btn-danger ms-2";
+  remove.onclick = () => li.remove();
+
+  li.appendChild(span);
+  li.appendChild(qty);
+  li.appendChild(remove);
+  listContainer.appendChild(li);
+}
+
 
 // Thêm dịch vụ đã chọn vào list
 function addService(svc) {
