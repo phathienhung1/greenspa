@@ -39,6 +39,7 @@ async function loadCustomers() {
     if (match) txtPhone.value = match.Phone;
   });
 }
+
 // Load Services (autocomplete + thêm nhiều + số lượng)
 async function loadServices() {
   let resp = await fetch("services.json");
@@ -47,42 +48,22 @@ async function loadServices() {
   let txtSvc = document.getElementById("serviceSearch");
   let listContainer = document.getElementById("selectedServices");
 
-  // Tạo box gợi ý
-  let suggestionBox = document.createElement("div");
-  suggestionBox.className = "list-group position-absolute w-100";
-  suggestionBox.style.zIndex = "1000";
-  txtSvc.parentNode.appendChild(suggestionBox);
-
   txtSvc.addEventListener("input", () => {
     let val = txtSvc.value.trim().toLowerCase();
-    suggestionBox.innerHTML = "";
-    if (!val) return;
-
-    let list = services.filter(s => s.Name.toLowerCase().includes(val)).slice(0, 5);
-    list.forEach(svc => {
-      let item = document.createElement("button");
-      item.type = "button";
-      item.className = "list-group-item list-group-item-action";
-      item.textContent = `${svc.Name} (${svc.Price.toLocaleString()}₫)`;
-      item.onclick = () => {
-        addServiceToList(svc, listContainer);
-        suggestionBox.innerHTML = "";
-        txtSvc.value = "";
-      };
-      suggestionBox.appendChild(item);
-    });
+    let list = services.filter(s => s.Name.toLowerCase().includes(val));
+    showSuggestions(txtSvc, list.map(s => s.Name)); // ✅ hiển thị tất cả
   });
 
   document.getElementById("btnAddService").addEventListener("click", () => {
-    let val = txtSvc.value.trim().toLowerCase();
-    let svc = services.find(s => s.Name.toLowerCase() === val);
+    let svcName = txtSvc.value.trim();
+    let svc = services.find(s => s.Name === svcName);
     if (!svc) {
       alert("Chọn dịch vụ hợp lệ!");
       return;
     }
+
     addServiceToList(svc, listContainer);
     txtSvc.value = "";
-    suggestionBox.innerHTML = "";
   });
 }
 
@@ -115,13 +96,34 @@ function addServiceToList(svc, listContainer) {
   listContainer.appendChild(li);
 }
 
+// Gợi ý autocomplete
+function showSuggestions(input, suggestions) {
+  closeSuggestions();
+  if (!suggestions.length) return;
+  let list = document.createElement("ul");
+  list.className = "suggestions list-group position-absolute";
+  list.style.zIndex = 1000;
+  list.style.maxHeight = "200px";
+  list.style.overflowY = "auto";
+  list.style.width = input.offsetWidth + "px";
 
-// Thêm dịch vụ đã chọn vào list
-function addService(svc) {
-  let ul = document.getElementById("selectedServices");
-  let li = document.createElement("li");
-  li.textContent = svc.Name + " - " + svc.Price.toLocaleString() + "đ";
-  ul.appendChild(li);
+  suggestions.forEach(s => {
+    let item = document.createElement("li");
+    item.textContent = s;
+    item.className = "list-group-item list-group-item-action";
+    item.addEventListener("click", () => {
+      input.value = s;
+      closeSuggestions();
+      input.dispatchEvent(new Event("change"));
+    });
+    list.appendChild(item);
+  });
+
+  input.parentNode.appendChild(list);
+}
+
+function closeSuggestions() {
+  document.querySelectorAll(".suggestions").forEach(el => el.remove());
 }
 
 // Hiển thị lịch hẹn dạng card
@@ -160,6 +162,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadCustomers();
   loadServices();
+
+  document.addEventListener("click", closeSuggestions);
 
   // xử lý submit form
   const form = document.getElementById("appointmentForm");
