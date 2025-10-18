@@ -40,42 +40,56 @@ async function loadCustomers() {
   });
 }
 
-// Load Services
+// Load Services (autocomplete + thêm nhiều + số lượng)
 async function loadServices() {
-  let resp = await fetch("services.json");
+  let resp = await fetch("/services.json");
   services = await resp.json();
 
-  let txtSearch = document.getElementById("serviceSearch");
-  let suggestionBox = document.createElement("div");
-  suggestionBox.className = "list-group position-absolute w-100";
-  txtSearch.parentNode.appendChild(suggestionBox);
+  let txtSvc = document.getElementById("serviceSearch");
+  let listContainer = document.getElementById("selectedServices");
 
-  txtSearch.addEventListener("input", () => {
-    let val = txtSearch.value.toLowerCase();
-    suggestionBox.innerHTML = "";
-    if (!val) return;
-    let filtered = services.filter(s => s.Name.toLowerCase().includes(val)).slice(0, 5);
-    filtered.forEach(svc => {
-      let item = document.createElement("button");
-      item.type = "button";
-      item.className = "list-group-item list-group-item-action";
-      item.textContent = svc.Name + " (" + svc.Price.toLocaleString() + "đ)";
-      item.onclick = () => {
-        addService(svc);
-        suggestionBox.innerHTML = "";
-        txtSearch.value = "";
-      };
-      suggestionBox.appendChild(item);
-    });
+  txtSvc.addEventListener("input", () => {
+    let val = txtSvc.value.trim().toLowerCase();
+    let list = services.filter(s => s.Name.toLowerCase().includes(val));
+    showSuggestions(txtSvc, list.map(s => s.Name)); // ❌ bỏ slice
   });
 
   document.getElementById("btnAddService").addEventListener("click", () => {
-    let val = txtSearch.value.trim().toLowerCase();
-    let svc = services.find(s => s.Name.toLowerCase().includes(val));
-    if (svc) {
-      addService(svc);
-      txtSearch.value = "";
+    let svcName = txtSvc.value.trim();
+    let svc = services.find(s => s.Name === svcName);
+    if (!svc) {
+      alert("Chọn dịch vụ hợp lệ!");
+      return;
     }
+
+    // tạo item dịch vụ có input số lượng
+    let li = document.createElement("li");
+    li.dataset.id = svc.Id;
+    li.className = "d-flex align-items-center mb-1";
+
+    let span = document.createElement("span");
+    span.textContent = svc.Name + " (" + svc.Price + "₫)";
+    span.style.flex = "1";
+
+    let qty = document.createElement("input");
+    qty.type = "number";
+    qty.value = 1;
+    qty.min = 1;
+    qty.className = "form-control form-control-sm";
+    qty.style.width = "60px";
+    qty.style.marginLeft = "8px";
+
+    let remove = document.createElement("button");
+    remove.textContent = "x";
+    remove.className = "btn btn-sm btn-danger ms-2";
+    remove.onclick = () => li.remove();
+
+    li.appendChild(span);
+    li.appendChild(qty);
+    li.appendChild(remove);
+    listContainer.appendChild(li);
+
+    txtSvc.value = "";
   });
 }
 
