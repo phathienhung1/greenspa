@@ -71,6 +71,8 @@ async function loadServices() {
 function addServiceToList(svc, listContainer) {
   let li = document.createElement("li");
   li.dataset.id = svc.Id;
+  li.dataset.name = svc.Name;
+  li.dataset.price = svc.Price;
   li.className = "d-flex align-items-center mb-1";
 
   let span = document.createElement("span");
@@ -96,41 +98,12 @@ function addServiceToList(svc, listContainer) {
   listContainer.appendChild(li);
 }
 
-// Gợi ý autocomplete
-function showSuggestions(input, suggestions) {
-  closeSuggestions();
-  if (!suggestions.length) return;
-  let list = document.createElement("ul");
-  list.className = "suggestions list-group position-absolute";
-  list.style.zIndex = 1000;
-  list.style.maxHeight = "200px";
-  list.style.overflowY = "auto";
-  list.style.width = input.offsetWidth + "px";
-
-  suggestions.forEach(s => {
-    let item = document.createElement("li");
-    item.textContent = s;
-    item.className = "list-group-item list-group-item-action";
-    item.addEventListener("click", () => {
-      input.value = s;
-      closeSuggestions();
-      input.dispatchEvent(new Event("change"));
-    });
-    list.appendChild(item);
-  });
-
-  input.parentNode.appendChild(list);
-}
-
-function closeSuggestions() {
-  document.querySelectorAll(".suggestions").forEach(el => el.remove());
-}
-
 // Hiển thị lịch hẹn dạng card
 function renderAppointments() {
   const container = document.getElementById("appointmentsList");
   container.innerHTML = "";
   appointments.forEach(ap => {
+    let servicesHtml = ap.services.map(s => `• ${s.name} (x${s.qty})`).join("<br>");
     let card = document.createElement("div");
     card.className = "col-12 col-md-6";
     card.innerHTML = `
@@ -142,7 +115,7 @@ function renderAppointments() {
             <b>Nhân viên:</b> ${ap.staff}<br>
             <b>Ngày:</b> ${ap.date} ${ap.start} - ${ap.end}<br>
             <b>Dịch vụ:</b><br>
-            ${ap.services.map(s => "• " + s).join("<br>")}<br>
+            ${servicesHtml}<br>
             <b>Thanh toán:</b> ${ap.paid ? "✅ Đã trả" : "❌ Chưa"}
           </p>
         </div>
@@ -152,39 +125,34 @@ function renderAppointments() {
   });
 }
 
-// Khi DOM load
-document.addEventListener("DOMContentLoaded", () => {
-  const cboBranch = document.getElementById("branch");
-  cboBranch.addEventListener("change", () => {
-    let branchId = parseInt(cboBranch.value);
-    loadStaffs(branchId);
-  });
+// Submit form
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-  loadCustomers();
-  loadServices();
-
-  document.addEventListener("click", closeSuggestions);
-
-  // xử lý submit form
-  const form = document.getElementById("appointmentForm");
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const data = {
-      branch: cboBranch.value,
-      staff: document.getElementById("staff").selectedOptions[0]?.textContent || "",
-      phone: document.getElementById("phone").value,
-      customer: document.getElementById("customer").value,
-      services: Array.from(document.querySelectorAll("#selectedServices li")).map(li => li.textContent),
-      date: document.getElementById("date").value,
-      start: document.getElementById("start").value,
-      end: document.getElementById("end").value,
-      paid: document.getElementById("paid").checked
+  const servicesData = Array.from(document.querySelectorAll("#selectedServices li")).map(li => {
+    let qtyInput = li.querySelector("input");
+    return {
+      id: li.dataset.id,
+      name: li.dataset.name,
+      price: li.dataset.price,
+      qty: qtyInput ? parseInt(qtyInput.value) : 1
     };
-
-    appointments.push(data);
-    renderAppointments();
-    form.reset();
-    document.getElementById("selectedServices").innerHTML = "";
   });
+
+  const data = {
+    branch: cboBranch.value,
+    staff: document.getElementById("staff").selectedOptions[0]?.textContent || "",
+    phone: document.getElementById("phone").value,
+    customer: document.getElementById("customer").value,
+    services: servicesData,
+    date: document.getElementById("date").value,
+    start: document.getElementById("start").value,
+    end: document.getElementById("end").value,
+    paid: document.getElementById("paid").checked
+  };
+
+  appointments.push(data);
+  renderAppointments();
+  form.reset();
+  document.getElementById("selectedServices").innerHTML = "";
 });
